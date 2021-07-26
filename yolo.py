@@ -28,9 +28,10 @@ class YOLO:
         self.sess = k.get_session()
         self.model_image_size = (608, 608)  # fixed size or (None, None)
         self.is_fixed_size = self.model_image_size != (None, None)
+        self.colors = None
+        self.input_image_shape = None
+        self.yolo_model = None
         self.boxes, self.scores, self.classes = self.generate()
-        self.colors = None,
-        self.input_image_shape = None,
 
     def _get_class(self):
         classes_path = os.path.expanduser(self.classes_path)
