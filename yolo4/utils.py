@@ -10,7 +10,6 @@ from matplotlib.colors import rgb_to_hsv, hsv_to_rgb
 def compose(*funcs):
     """Compose arbitrarily many functions, evaluated left to right.
 
-    Reference: https://mathieularose.com/function-composition-in-python/
     """
     # return lambda x: reduce(lambda v, f: f(v), funcs, x)
     if funcs:
@@ -20,7 +19,7 @@ def compose(*funcs):
 
 
 def letterbox_image(image, size):
-    '''resize image with unchanged aspect ratio using padding'''
+    """resize image with unchanged aspect ratio using padding"""
     iw, ih = image.size
     w, h = size
     scale = min(w / iw, h / ih)
@@ -37,9 +36,18 @@ def rand(a=0, b=1):
     return np.random.rand() * (b - a) + a
 
 
-def get_random_data(annotation_line, input_shape, random=True, max_boxes=100, jitter=.3, hue=.1, sat=1.5, val=1.5,
-                    proc_img=True):
-    '''random preprocessing for real-time data augmentation'''
+def get_random_data(
+        annotation_line,
+        input_shape,
+        random=True,
+        max_boxes=100,
+        jitter=.3,
+        hue=.1,
+        sat=1.5,
+        val=1.5,
+        proc_img=True
+):
+    """random preprocessing for real-time data augmentation"""
     line = annotation_line.split()
     image = Image.open(line[0])
     iw, ih = image.size

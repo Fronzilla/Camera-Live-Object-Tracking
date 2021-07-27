@@ -4,15 +4,15 @@ YOLO v4 detection model.
 """
 
 import colorsys
+import os
 
 import numpy as np
 from keras import backend as k
 from keras.models import load_model
+from keras.utils import multi_gpu_model
 
 from yolo4.model import yolo_eval, Mish
 from yolo4.utils import letterbox_image
-import os
-from keras.utils import multi_gpu_model
 
 
 class YOLO:

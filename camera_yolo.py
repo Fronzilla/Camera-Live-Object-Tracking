@@ -24,12 +24,12 @@ class Camera(BaseCamera):
 
     # Return true if line segments AB and CD intersect
     @staticmethod
-    def intersect(A, B, C, D):
-        return Camera.ccw(A, C, D) != Camera.ccw(B, C, D) and Camera.ccw(A, B, C) != Camera.ccw(A, B, D)
+    def intersect(a, b, c, d):
+        return Camera.ccw(a, c, d) != Camera.ccw(b, c, d) and Camera.ccw(a, b, c) != Camera.ccw(a, b, d)
 
     @staticmethod
-    def ccw(A, B, C):
-        return (C[1] - A[1]) * (B[0] - A[0]) > (B[1] - A[1]) * (C[0] - A[0])
+    def ccw(a, b, c):
+        return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0])
 
     @staticmethod
     def vector_angle(midpoint, previous_midpoint):
@@ -45,7 +45,7 @@ class Camera(BaseCamera):
 
         gdet = import_module('tools.generate_detections')
         nn_matching = import_module('deep_sort.nn_matching')
-        Tracker = import_module('deep_sort.tracker').Tracker
+        tracker = import_module('deep_sort.tracker').Tracker
 
         # Definition of the parameters
         max_cosine_distance = 0.3
@@ -56,7 +56,7 @@ class Camera(BaseCamera):
         encoder = gdet.create_box_encoder(model_filename, batch_size=1)
 
         metric = nn_matching.NearestNeighborDistanceMetric("cosine", max_cosine_distance, nn_budget)
-        tracker = Tracker(metric)
+        tracker = tracker(metric)
 
         yolo = YOLO()
         nms_max_overlap = 1.0

@@ -1,6 +1,8 @@
-from base_camera import BaseCamera
 import time
+
 import cv2
+
+from base_camera import BaseCamera
 
 
 class Camera(BaseCamera):
@@ -29,7 +31,7 @@ class Camera(BaseCamera):
                 frame, "FPS: %.2f" % fps,
                 (int(20), int(40 * 5e-3 * frame.shape[0])),
                 0,
-                2e-3 * frame.shape[0],
+                       2e-3 * frame.shape[0],
                 (255, 255, 255), 2
             )
 

@@ -44,7 +44,7 @@ class Detection:
         Finds midpoint of a box in tlbr format.
         """
         min_x, min_y, max_x, max_y = box
-        midpoint = (int((min_x+max_x)/2), int((min_y+max_y)/2))
+        midpoint = (int((min_x + max_x) / 2), int((min_y + max_y) / 2))
         return midpoint
 
     def to_xyah(self):

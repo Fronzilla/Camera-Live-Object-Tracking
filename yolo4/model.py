@@ -604,7 +604,8 @@ def yolo4_loss(
         use_giou_loss=False,
         use_diou_loss=False
 ):
-    """Return yolo4_loss tensor
+    """
+    Return yolo4_loss tensor
 
     Parameters
     ----------
@@ -638,8 +639,14 @@ def yolo4_loss(
         if label_smoothing:
             true_class_probs = _smooth_labels(true_class_probs, label_smoothing)
 
-        grid, raw_pred, pred_xy, pred_wh = yolo_head(yolo_outputs[l],
-                                                     anchors[anchor_mask[l]], num_classes, input_shape, calc_loss=True)
+        grid, raw_pred, pred_xy, pred_wh = yolo_head(
+            yolo_outputs[l],
+            anchors[anchor_mask[l]],
+            num_classes,
+            input_shape,
+            calc_loss=True
+        )
+
         pred_box = K.concatenate([pred_xy, pred_wh])
 
         # Darknet raw box to calculate loss.
@@ -652,12 +659,12 @@ def yolo4_loss(
         ignore_mask = tf.TensorArray(K.dtype(y_true[0]), size=1, dynamic_size=True)
         object_mask_bool = K.cast(object_mask, 'bool')
 
-        def loop_body(b, ignore_mask):
+        def loop_body(b, ignore_mask_):
             true_box = tf.boolean_mask(y_true[l][b, ..., 0:4], object_mask_bool[b, ..., 0])
             iou = box_iou(pred_box[b], true_box)
             best_iou = K.max(iou, axis=-1)
-            ignore_mask = ignore_mask.write(b, K.cast(best_iou < ignore_thresh, K.dtype(true_box)))
-            return b + 1, ignore_mask
+            ignore_mask_ = ignore_mask_.write(b, K.cast(best_iou < ignore_thresh, K.dtype(true_box)))
+            return b + 1, ignore_mask_
 
         _, ignore_mask = tf.while_loop(lambda b, *args: b < m, loop_body, [0, ignore_mask])
         ignore_mask = ignore_mask.stack()
@@ -667,9 +674,11 @@ def yolo4_loss(
             # Focal loss for objectness confidence
             confidence_loss = sigmoid_focal_loss(object_mask, raw_pred[..., 4:5])
         else:
-            confidence_loss = object_mask * K.binary_crossentropy(object_mask, raw_pred[..., 4:5], from_logits=True) + \
-                              (1 - object_mask) * K.binary_crossentropy(object_mask, raw_pred[..., 4:5],
-                                                                        from_logits=True) * ignore_mask
+            confidence_loss = object_mask * K.binary_crossentropy(
+                object_mask, raw_pred[..., 4:5], from_logits=True
+            ) + (1 - object_mask) * K.binary_crossentropy(
+                object_mask, raw_pred[..., 4:5], from_logits=True
+            ) * ignore_mask
 
         if use_focal_loss:
             # Focal loss for classification score
